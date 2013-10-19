@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -22,17 +22,18 @@ import static alans.recipe.Unit.slices;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class RecipesTest {
+public class RecipeTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String NAME = "grilled cheese on toast";
-    private static final String ITEM_1 = "bread";
+    private static final String ITEM = "bread";
 
     private static String json;
 
     @BeforeClass
     public static void setUp() throws IOException {
         json = new String(Files.readAllBytes(Paths.get("src/main/resources/recipes.json")));
+        // json = Files.toString(new File("src/main/resources/recipes.json"), Charsets.UTF_8);
     }
 
     @Test
@@ -50,7 +51,7 @@ public class RecipesTest {
         assertEquals(2, ingredients.size());
 
         final Ingredient ingredient = ingredients.get(0);
-        assertEquals(ITEM_1, ingredient.getItem());
+        assertEquals(ITEM, ingredient.getItem());
         assertEquals(2, ingredient.getAmount());
         assertEquals(slices, ingredient.getUnit());
     }
@@ -58,16 +59,16 @@ public class RecipesTest {
     @Test
     public final void canSerializeToJson() throws JsonProcessingException, JSONException {
         final List<Recipe> recipes = Arrays.asList(new Recipe.Builder().withName(NAME).withIngredients(Arrays
-                .asList(new Ingredient.Builder().withItem(ITEM_1).withAmount(2).withUnit(slices)
+                .asList(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices)
                         .build(), new Ingredient.Builder().withItem("cheese").withAmount(2).withUnit(slices).build()))
                 .build(), new Recipe.Builder().withName("salad sandwich").withIngredients(Arrays
-                .asList(new Ingredient.Builder().withItem(ITEM_1).withAmount(2).withUnit(slices)
+                .asList(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices)
                         .build(), new Ingredient.Builder().withItem("mixed salad").withAmount(100).withUnit(grams)
                         .build())).build());
 
         final ObjectWriter objectWriter = MAPPER.writerWithType(new TypeReference<List<Recipe>>() {});
-        JSONObject actual = new JSONObject(objectWriter.writeValueAsString(recipes));
-        JSONObject expected = new JSONObject(json);
-        JSONAssert.assertEquals(expected, actual, false);
+        final JSONArray actual = new JSONArray(objectWriter.writeValueAsString(recipes));
+        final JSONArray expected = new JSONArray(json);
+        JSONAssert.assertEquals(expected, actual, true);
     }
 }
