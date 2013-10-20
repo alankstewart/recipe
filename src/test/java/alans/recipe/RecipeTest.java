@@ -32,7 +32,7 @@ public class RecipeTest {
 
     @BeforeClass
     public static void setUp() throws IOException {
-        json = new String(Files.readAllBytes(Paths.get("src/main/resources/recipes.json")));
+         json = new String(Files.readAllBytes(Paths.get("src/main/resources/recipes.json")));
         // json = Files.toString(new File("src/main/resources/recipes.json"), Charsets.UTF_8);
     }
 
