@@ -102,7 +102,7 @@ public final class RecipeFinder {
         }
         final List<String> fridgeItemElements = Splitter.on(",").splitToList(row);
         if (fridgeItemElements.size() != 4) {
-            Optional.absent();
+            return Optional.absent();
         }
         final String item = fridgeItemElements.get(0);
         final int amount = Integer.parseInt(fridgeItemElements.get(1));
