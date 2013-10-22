@@ -51,28 +51,31 @@ public final class RecipeFinder {
         final Set<FridgeItem> usableFridgeItems = getUsableFridgeItems(csvPath);
         final List<Recipe> recipes = readRecipes(jsonPath);
         for (final FridgeItem fridgeItem : usableFridgeItems) {
-            for (final Recipe recipe : recipes) {
-                final List<Ingredient> ingredients = recipe.getIngredients();
-                if (!isIngredientInFridge(ingredients, fridgeItem)) {
-                    continue;
-                }
-
-                int ingredientCount = size(filter(ingredients, new Predicate<Ingredient>() {
-                    @Override
-                    public boolean apply(final Ingredient ingredient) {
-                        return !isEmpty(filter(usableFridgeItems, new Predicate<FridgeItem>() {
-                            @Override
-                            public boolean apply(final FridgeItem fridgeItem) {
-                                return fridgeItem.getItem().equals(ingredient.getItem()) && fridgeItem
-                                        .getAmount() >= ingredient.getAmount() && fridgeItem.getUnit() == ingredient
-                                        .getUnit();
-                            }
-                        }));
+            final Optional<Recipe> recipeOptional = tryFind(recipes, new Predicate<Recipe>() {
+                @Override
+                public boolean apply(final Recipe recipe) {
+                    final List<Ingredient> ingredients = recipe.getIngredients();
+                    if (!isIngredientInFridge(ingredients, fridgeItem)) {
+                        return false;
                     }
-                }));
-                if (ingredientCount == ingredients.size()) {
-                    return recipe.getName();
+                    final int eligibleFridgeItems = size(filter(ingredients, new Predicate<Ingredient>() {
+                        @Override
+                        public boolean apply(final Ingredient ingredient) {
+                            return !isEmpty(filter(usableFridgeItems, new Predicate<FridgeItem>() {
+                                @Override
+                                public boolean apply(final FridgeItem fridgeItem) {
+                                    return fridgeItem.getItem().equals(ingredient.getItem()) && fridgeItem
+                                            .getAmount() >= ingredient.getAmount() && fridgeItem.getUnit() == ingredient
+                                            .getUnit();
+                                }
+                            }));
+                        }
+                    }));
+                    return eligibleFridgeItems == ingredients.size();
                 }
+            });
+            if (recipeOptional.isPresent()) {
+                return recipeOptional.get().getName();
             }
         }
         return "Order Takeout";
@@ -113,8 +116,7 @@ public final class RecipeFinder {
     }
 
     private List<Recipe> readRecipes(final String recipesFilePath) throws IOException {
-        final ObjectReader objectReader = MAPPER.reader(new TypeReference<List<Recipe>>() {
-        });
+        final ObjectReader objectReader = MAPPER.reader(new TypeReference<List<Recipe>>() {});
         return objectReader.readValue(Files.readAllBytes(Paths.get(recipesFilePath)));
     }
 
