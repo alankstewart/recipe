@@ -34,18 +34,10 @@
             <lineEnding>unix</lineEnding>
             <outputDirectory>etc</outputDirectory>
             <includes>
-                <include>*.xml</include>
                 <include>*.properties</include>
                 <include>*.json</include>
                 <include>*.csv</include>
             </includes>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/resources</directory>
-            <outputDirectory>data</outputDirectory>
-            <excludes>
-                <exclude>*</exclude>
-            </excludes>
         </fileSet>
     </fileSets>
     <dependencySets>

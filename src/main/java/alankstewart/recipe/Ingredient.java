@@ -1,6 +1,7 @@
-package alans.recipe;
+package alankstewart.recipe;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.base.Objects;
 
 @JsonDeserialize(builder = Ingredient.Builder.class)
 public class Ingredient {
@@ -25,6 +26,11 @@ public class Ingredient {
 
     public Unit getUnit() {
         return unit;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("item", item).add("amount", amount).add("unit", unit).toString();
     }
 
     public static final class Builder {

@@ -7,4 +7,10 @@
 export CLASS_PATH=lib/'*'
 export CLASS_PATH=$CLASS_PATH:etc
 
-java -Xms128m -Xmx1024m -Djava.util.logging.config.file=etc/logging.properties -cp $CLASS_PATH recipe.RecipeFinder
+if [ $# -eq 0 ]
+  then
+    echo "Usage: recipe-finder <fridge csv file> <recipe json file>"
+    exit 1;
+fi
+
+java -Xms128m -Xmx1024m -Djava.util.logging.config.file=etc/logging.properties -cp $CLASS_PATH alankstewart.recipe.RecipeFinder $1 $2

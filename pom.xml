@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>recipe</groupId>
-    <artifactId>recipe</artifactId>
+    <groupId>alankstewart</groupId>
+    <artifactId>recipe-finder</artifactId>
     <packaging>jar</packaging>
     <name>Recipe Finder</name>
     <description>Recipe Finder</description>
@@ -42,10 +42,16 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <artifactId>junit</artifactId>
