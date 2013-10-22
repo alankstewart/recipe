@@ -41,7 +41,8 @@ public class FridgeItem implements Comparable<FridgeItem> {
 
     @Override
     public String toString() {
-        return String.format("FridgeItem [item=%s, amount=%s, unit=%s, useBy=%s]", item, amount, unit, useBy);
+        return Objects.toStringHelper(this).add("item", item).add("amount", amount).add("unit", unit)
+                .add("useBy", useBy).toString();
     }
 
     public static class Builder {
@@ -53,12 +54,6 @@ public class FridgeItem implements Comparable<FridgeItem> {
 
         public FridgeItem build() {
             return new FridgeItem(item, amount, unit, useBy);
-        }
-
-        @Override
-        public String toString() {
-            return Objects.toStringHelper(this).add("item", item).add("amount", amount).add("unit", unit)
-                    .add("useBy", useBy).toString();
         }
 
         public Builder withItem(final String item) {
