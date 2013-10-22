@@ -61,18 +61,20 @@ public final class RecipeTest {
 
     @Test
     public final void canSerializeToJson() throws JsonProcessingException, JSONException {
-        final List<Recipe> recipes = newArrayList(new Recipe.Builder().withName(NAME)
-                .withIngredient(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices).build())
-                .withIngredient(new Ingredient.Builder().withItem("cheese").withAmount(2).withUnit(slices).build())
-                .build(), new Recipe.Builder().withName("salad sandwich")
-                .withIngredients(newArrayList(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices)
-                        .build(), new Ingredient.Builder().withItem("mixed salad").withAmount(100).withUnit(grams)
-                        .build())).build());
+        final Ingredient bread = getIngredient(ITEM, 2, slices);
+        final List<Recipe> recipes = newArrayList(new Recipe.Builder().withName(NAME).withIngredient(bread)
+                .withIngredient(getIngredient("cheese", 2, slices)).build(), new Recipe.Builder()
+                .withName("salad sandwich").withIngredient(bread)
+                .withIngredient(getIngredient("mixed salad", 100, grams)).build());
 
         final ObjectWriter objectWriter = MAPPER.writerWithType(new TypeReference<List<Recipe>>() {
         });
         final JSONArray actual = new JSONArray(objectWriter.writeValueAsString(recipes));
         final JSONArray expected = new JSONArray(json);
         JSONAssert.assertEquals(expected, actual, true);
+    }
+
+    private Ingredient getIngredient(final String item, final int amount, final Unit unit) {
+        return new Ingredient.Builder().withItem(item).withAmount(amount).withUnit(unit).build();
     }
 }
