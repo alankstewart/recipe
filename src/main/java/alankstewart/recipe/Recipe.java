@@ -48,7 +48,9 @@ public class Recipe {
         }
 
         public Builder withIngredients(final List<Ingredient> ingredients) {
-            this.ingredients = ingredients;
+            if (ingredients != null) {
+                this.ingredients.addAll(ingredients);
+            }
             return this;
         }
 
