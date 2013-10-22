@@ -15,11 +15,11 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.List;
 
 import static alankstewart.recipe.Unit.grams;
 import static alankstewart.recipe.Unit.slices;
+import static com.google.common.collect.Lists.newArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -61,11 +61,11 @@ public final class RecipeTest {
 
     @Test
     public final void canSerializeToJson() throws JsonProcessingException, JSONException {
-        final List<Recipe> recipes = Arrays.asList(new Recipe.Builder().withName(NAME).withIngredients(Arrays
-                .asList(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices)
-                        .build(), new Ingredient.Builder().withItem("cheese").withAmount(2).withUnit(slices).build()))
-                .build(), new Recipe.Builder().withName("salad sandwich").withIngredients(Arrays
-                .asList(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices)
+        final List<Recipe> recipes = newArrayList(new Recipe.Builder().withName(NAME)
+                .withIngredient(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices).build())
+                .withIngredient(new Ingredient.Builder().withItem("cheese").withAmount(2).withUnit(slices).build())
+                .build(), new Recipe.Builder().withName("salad sandwich")
+                .withIngredients(newArrayList(new Ingredient.Builder().withItem(ITEM).withAmount(2).withUnit(slices)
                         .build(), new Ingredient.Builder().withItem("mixed salad").withAmount(100).withUnit(grams)
                         .build())).build());
 
