@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.joda.time.DateTime;
@@ -21,6 +20,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
+import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.size;
@@ -50,6 +52,10 @@ public final class RecipeFinder {
     public String getRecipeForToday(final String csvPath, final String jsonPath) throws IOException {
         final Set<FridgeItem> usableFridgeItems = getUsableFridgeItems(csvPath);
         final List<Recipe> recipes = readRecipes(jsonPath);
+        return getRecipeForToday(usableFridgeItems, recipes);
+    }
+
+    public String getRecipeForToday(final Set<FridgeItem> usableFridgeItems, final List<Recipe> recipes) throws IOException {
         for (final FridgeItem fridgeItem : usableFridgeItems) {
             final Optional<Recipe> recipeOptional = tryFind(recipes, new Predicate<Recipe>() {
                 @Override
@@ -96,23 +102,22 @@ public final class RecipeFinder {
                 }
                 return null;
             }
-        }), Predicates.notNull()));
+        }), notNull()));
     }
 
     private Optional<FridgeItem> getFridgeItem(final String row) {
         if (Strings.isNullOrEmpty(row)) {
-            return Optional.absent();
+            return absent();
         }
         final List<String> fridgeItemElements = Splitter.on(",").splitToList(row);
         if (fridgeItemElements.size() != 4) {
-            return Optional.absent();
+            return absent();
         }
         final String item = fridgeItemElements.get(0);
         final int amount = Integer.parseInt(fridgeItemElements.get(1));
         final Unit unit = Unit.valueOf(fridgeItemElements.get(2));
         final DateTime useBy = DateTimeFormat.forPattern("dd/MM/yyyy").parseDateTime(fridgeItemElements.get(3));
-        return Optional
-                .of(new FridgeItem.Builder().withItem(item).withAmount(amount).withUnit(unit).withUseBy(useBy).build());
+        return of(new FridgeItem.Builder().withItem(item).withAmount(amount).withUnit(unit).withUseBy(useBy).build());
     }
 
     private List<Recipe> readRecipes(final String recipesFilePath) throws IOException {
