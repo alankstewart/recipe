@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,7 +14,16 @@ import static org.junit.Assert.assertEquals;
 
 public class RecipeFinderTest {
 
+    private static String csvPath;
+    private static String jsonPath;
+
     private RecipeFinder recipeFinder;
+
+    @BeforeClass
+    public static void onlyOnce() {
+        csvPath = getPath("/fridge.csv");
+        jsonPath = getPath("/recipes.json");
+    }
 
     @Before
     public void setUp() {
@@ -43,12 +53,11 @@ public class RecipeFinderTest {
     }
 
     private void assertRecipe(final String name) throws IOException {
-        assertEquals(name, recipeFinder.getRecipeForToday(getPath("/fridge.csv"), getPath("/recipes.json")));
+        assertEquals(name, recipeFinder.getRecipeForToday(csvPath, jsonPath));
     }
 
-    private String getPath(final String resource) {
-        final File file = new File(getClass().getResource(resource).getPath());
-        return file.getAbsolutePath();
+    private static String getPath(final String resource) {
+        return new File(RecipeFinderTest.class.getResource(resource).getPath()).getAbsolutePath();
     }
 
     private void setFutureDate(int year, int month, int day) {

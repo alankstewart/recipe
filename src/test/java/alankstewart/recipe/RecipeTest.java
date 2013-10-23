@@ -31,7 +31,7 @@ public final class RecipeTest {
     private static String json;
 
     @BeforeClass
-    public static void setUp() throws IOException {
+    public static void onlyOnce() throws IOException {
         try (final InputStream inputStream = RecipeTest.class.getResourceAsStream("/recipes.json");
              final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);) {
             json = CharStreams.toString(inputStreamReader);
